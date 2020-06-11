@@ -1,8 +1,6 @@
-*May need to find an early location to define munging*
-
 # Methods
 
-Flywheel tools is a multiple purpose toolkit for interacting with the Flywheel
+Flywheel Tools is a multiple purpose toolkit for interacting with the Flywheel
 platform. The toolkit allows users to follow a reproducible workflow for BIDS
 curation and audit of their data, that includes 1) inspection of sequences; 2)
 design of a curation heuristic; 3) heuristic testing and implementation; 3)
@@ -10,19 +8,12 @@ curated data inspection and export; and finally 4) audit of data and analyses.
 
 ## Programming Languages & Technologies
 
-Flywheel Tools is built primarily in Python 3.6 **[CITE]()** due to its ease of
-use in interfacing with the Flywheel SDK. Additionally, R 3.4.1, with its
+Flywheel Tools is built primarily in Python 3.6 **[CITE]()** in order to
+leverage its highly accessible SDK. Additionally, R 3.4.1, with its
 extensive variety of libraries for creating high-quality data analysis reports,
-is used for HTML report generation **[CITE]()**. The majority of SDK users on
-the Flywheel platform utilise Python as their programming language of choice *is
-there a reference for this?*, allowing members of the community to view and
-contribute to the open-source codebase *When I read this I got confused for a
-second thinking you were talking about the FlyWheel SDK codebase. That's
-definitely NOT easy to contribute to because it's all swagger! That might be
-worth pointing out here, that unlike the actual Flywheel SDK, your suite of
-tools are standard Python/R packages that are easy to contribute to*. For
-reprodicibility and workflow management, Flywheel Tools' modules are packaged in
-version controlled software containers built and managed in Docker **[CITE]()**.
+is used for HTML report generation **[CITE]()**. For reproducibility and
+workflow management, Flywheel Tools' modules are packaged in
+version-controlled software containers built and managed in Docker **[CITE]()**.
 Lastly, the Flywheel Tools package relies on users adopting the Brain Imaging
 Data Structure (BIDS) paradigm to curate their data. BIDS is a paradigm for
 reproducible and collaborative data storage and is growing rapidly in the
@@ -63,8 +54,6 @@ into Pythonic Objects, the flywheel SDK is effectively an object relationship
 mapper (ORM) somewhat similar to the popular SQLAlchemy package. Programming
 with the Python SDK involves objects and methods that any user with Python
 programming experience can quickly pick up.
-*this is an excellent summary of flywheel. We should check with them about how
-much of this is ok to include in a public paper. is some of it trade secrets?*
 
 ### Flywheel Data Model
 
@@ -97,21 +86,29 @@ accomplish a wide range of tasks.
 
 ### Flywheel Gears
 
-Flywheel encourages the use of pre-packaged analysis workflows called *gears*.
-These gears are run by virtual machines using Docker and hence are
-version-controlled and software/platform agnostic **[CITE]()**. In addition to
-the multitude of gears available on the platform, users are able to package
-their own software in a gear and use it for running analysis workflows on their
-Flywheel data, via the web UI or SDK. Deciding on whether to accomplish a task
-using the web UI, programmatically using the SDK, or by wrapping it as a
-workflow into a gear, depends on the complexity and frequency of the task
-**[IMAGE]()**.
+Flywheel encourages the use of pre-packaged computational workflows, called
+*gears*. Gears are run by virtual machines/containers using Docker and hence are
+version-controlled and software/platform agnostic **[CITE]()**, and are created
+to accomplish the tasks such as data manipulation, pre-processing, analysis, and
+summarisation. In addition to the multitude of gears available on the platform,
+users are able to package their own software in a gear and use it for running
+analysis workflows on their Flywheel data, via the web UI or SDK. Deciding on
+whether to accomplish a task using the web UI, programmatically using the SDK,
+or by wrapping it as a workflow into a gear, depends on the complexity and
+frequency of the task **[IMAGE]()**. Gears can take existing Flywheel data, such
+as images or file attachments, as inputs to the workflow, and can be created
+with clickable configuration options. Once a workflow has completed running,
+Flywheel collects any files remaining in the container's pre-defined output
+directory and attaches them to a resulting analysis object. The resultant files
+of a gear (such as an HTML report or tabulated data) can be viewed on the
+Flywheel UI, downloaded to disk for further data sharing or analysis, or be used
+as input to a subsequent gear themselves.
 
 # Results
 
 We implemented the Flywheel Tools package using the Flywheel SDK to enable easy
 inspection, curation, validation, and audit of Flywheel data through a handful
-of user-friendly gears and command-line tools.
+of user-friendly gears and command-line interfaces.
 
 The first module of the package is called `fw-heudiconv`, and is largely
 inspired by the popular HeuDiConv Python package **[CITE]()**. `fw-heudiconv` is
@@ -122,9 +119,82 @@ feet.
 
 ## `fw-heudiconv`
 
+The first tool, `fw-heudiconv`, is a multi-purpose command-line interface and
+Flywheel gear designed for comprehensive BIDS curation on Flywheel. It is
+designed to be intuitive, flexible, and reproducible.
+
 ### Architecture & Design
 
+`fw-heudiconv` is inspired in large part by the Heuristic Dicom Converter
+(HeuDiConv) package, and shares much of its design practices. In order to curate
+data into BIDS, `fw-heudiconv` first considers Dicom data to be the "ground
+truth" data, and builds its curation approach using data in the Dicoms' headers.
+Ultimately, `fw-heudiconv` only has permission to manipulate metadata attached
+to NIfTI files, in the "Info: BIDS" field, which ensures that curation can be
+repeated from the stage of Dicom ingress reliably and safely.
+
+`fw-heudiconv` can be downloaded as a Python command-line interface from the
+Python Package Index using `pip`, and is available as a point-and-clickable gear
+on the Flywheel UI. The gear is managed by Docker containerisation, meaning that
+versioning is reliable and reproducible. There are a number of commands
+available in `fw-heudiconv`, and each of them starts by querying data from
+Flywheel. Users can filter their queries, so as to operate on an entire Flywheel
+project, a subset of subjects, or a subset of sessions, and each command has the
+ability to safely test and evaluate its effects without manipulating metadata on
+Flywheel or writing data to disk. In particular, there are four commands users
+can access:
+
+#### 1. `fw-heudiconv-tabulate`
+
+The tabulate tool is used to parse and extract Dicom header information in a
+project (or within a filtered subset of that project) and tabulate this data for
+the user to examine with ease. By collecting Dicom header information into
+tabular format, the tabulate tool gives users a comprehensive overview of the
+different scanning sequences that have been collected in the query, including
+their sequence parameters. Additionally, users have the option to
+limit the tabulation to a unique combination of common Dicom header fields,
+which significantly decreases complexity of the table. The table output by this
+command can be written to a local disk if run from the command line, or is saved
+in the output section of a Flywheel gear if run on Flywheel.
+
+#### 2. `fw-heudiconv-curate`
+
+The curate tool is used to curate a dataset on Flywheel into BIDS format.
+Much like HeuDiConv, curation is done through the use of a heuristic, a Python
+file which programmatically defines the templates of a range of BIDS valid
+filenames, and defines the boolean logic that would assign a given scanning
+sequence to each template. This boolean logic is based on the sequence
+information users find in the tabulation of sequences, and all fields available
+in the Dicom header can be used to parse out which template a particular file
+can be assigned to. Additionally, the curate tool can be used to manipulate BIDS
+metadata that may need to be added to the dataset. The process of curation only
+manipulates BIDS metadata of NIfTI files, and hence can be repeated or updated
+at any time at the user's discretion.
+
+#### 3. `fw-heudiconv-export`
+
+The export tool is used to export a BIDS dataset on Flywheel to disk. The tool
+is primarily used as a helper tool for other gears and scripts to quickly and
+easily extract their BIDS data into the workspace of their analysis pipeline, or
+by individuals who need their BIDS data exported from Flywheel.
+
+#### 5. `fw-heudiconv-validate`
+
+The validate tool is a wrapper around the popular BIDS Validator package
+**[CITE]()** and is use to check if the applied curation results in a BIDS-valid
+dataset. After exporting a data set with `fw-heudiconv-export`, the validate
+tool runs the BIDS validator on the dataset and returns the result and verbose
+description of the errors and warnings given by the BIDS Validator.
+
+#### 5. `fw-heudiconv-clear`
+
+The clear tool is used to clear BIDS information cleanly and safely from the
+project or subjects and sessions queried. This can be useful when overwriting by
+re-curating current BIDS data doesn't erase existing data.
+
 ### Curation Workflow
+
+
 
 ## `flaudit`
 
