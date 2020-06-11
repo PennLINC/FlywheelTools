@@ -141,7 +141,7 @@ available in `fw-heudiconv`, and each of them starts by querying data from
 Flywheel. Users can filter their queries, so as to operate on an entire Flywheel
 project, a subset of subjects, or a subset of sessions, and each command has the
 ability to safely test and evaluate its effects without manipulating metadata on
-Flywheel or writing data to disk. In particular, there are four commands users
+Flywheel or writing data to disk. In particular, there are five commands users
 can access:
 
 #### 1. `fw-heudiconv-tabulate`
@@ -178,7 +178,7 @@ is primarily used as a helper tool for other gears and scripts to quickly and
 easily extract their BIDS data into the workspace of their analysis pipeline, or
 by individuals who need their BIDS data exported from Flywheel.
 
-#### 5. `fw-heudiconv-validate`
+#### 4. `fw-heudiconv-validate`
 
 The validate tool is a wrapper around the popular BIDS Validator package
 **[CITE]()** and is use to check if the applied curation results in a BIDS-valid
