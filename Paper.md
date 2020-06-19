@@ -62,13 +62,13 @@ familiar to neuroimaging researchers. Objects follow a specific hierarchical
 structure **([IMAGE]())** — at the top level is the FlyWheel *instance*, a
 process running that serves the API to users (for example, a
 University). Within the FlyWheel instance, there are multiple *groups*, which
-are typically a lab or collection or research that collaborate on one of more
-*projects*. Each project object can have one or
-many subjects (i.e. participants), and each subject can have one or many
-sessions (i.e. scanning visits). Within a session, there may be one or many
-acquisition objects which describe the scanning sequence collected during a
-particular or examination (e.g. rs-fMRI, DWI, PET), and under each acquisition
-is *attached* the data file associated with the sequence (e.g. a NIfTI file).
+are typically labs or research units that collaborate on one or more
+*projects*. Each project object can have one or many *subjects* (i.e.
+participants), and each subject can have one or many *sessions* (i.e. scanning
+visits). Within a session, there may be one or many *acquisition* objects which
+represent the scanning sequence collected during a particular scan or
+examination (e.g. rs-fMRI, DWI, PET), and under each acquisition is *attached*
+the data file associated with the sequence (e.g. a NIfTI file or DICOM).
 Note that a file can be attached to any object type, and each object can have
 metadata associated with it. Hence, a subject object may have de-identified
 demographic metadata associated to that participant, and the object may also
@@ -146,13 +146,13 @@ can access:
 
 #### 1. `fw-heudiconv-tabulate`
 
-The tabulate tool is used to parse and extract Dicom header information in a
+The tabulate tool is used to parse and extract DICOM header information in a
 project (or within a filtered subset of that project) and tabulate this data for
-the user to examine with ease. By collecting Dicom header information into
+the user to examine with ease. By collecting DICOM header information into
 tabular format, the tabulate tool gives users a comprehensive overview of the
 different scanning sequences that have been collected in the query, including
 their sequence parameters. Additionally, users have the option to
-limit the tabulation to a unique combination of common Dicom header fields,
+limit the tabulation to a unique combination of common DICOM header fields,
 which significantly decreases complexity of the table. The table output by this
 command can be written to a local disk if run from the command line, or is saved
 in the output section of a Flywheel gear if run on Flywheel.
@@ -190,12 +190,117 @@ description of the errors and warnings given by the BIDS Validator.
 
 The clear tool is used to clear BIDS information cleanly and safely from the
 project or subjects and sessions queried. This can be useful when overwriting by
-re-curating current BIDS data doesn't erase existing data.
+re-curating current BIDS data doesn't fully erase existing data.
+
+### Heuristic File
+
+The heuristic file is a Python file used as input to the `fw-heudiconv-curate`
+command. It instructs `fw-heudiconv` how to programmatically sort and parse
+through each acquisition object in Flywheel, and assign it to a BIDS-valid
+naming template. This is done by checking attributes of a list of `seqInfo`
+objects — generated from each DICOM's header information — against user-defined
+boolean rules. For example, if a T1-weighted image is present in a dataset, the
+user could define a string with a BIDS-valid naming template for this type of
+file, such as:
+
+```
+t1w = 'subject-{SubjectLabel}_session-{SessionLabel}_T1w.nii.gz'
+```
+
+(where the `SubjectLabel` and `SessionLabel` portions are expected to be
+automatically generated for each subject and session). After a DICOM's
+`SeriesDescription` field is added to the `seqInfo`'s `SeriesDescription`
+attribute, the user can create simple boolean rules to check if the string 'T1w'
+is in the `SeriesDescription`. If such a rule is met, this acquisition and its
+NIfTI file must be assigned to the T1-weighted image naming template. The NIfTI
+file will ultimately have this BIDS naming added to its metadata, and be named
+correctly when exported to a filesystem.
+
+In addition to setting naming templates, the heuristic file can also be used to
+hardcode and assign metadata in BIDS. These data are hard-coded into the file
+object's metadata on Flywheel, and are assigned by using specially reserved
+functions and keywords in `fw-heudiconv`. For example, if a user wanted to
+hard-code Repetition Time for a T1 scan, this can be specified in a heuristic by
+creating a Python dictionary that points a dictionary of metadata to a template.
+In this example:
+
+```
+MetadataExtras = {
+
+  t1w: {'RepetitionTime': 1.018}
+
+}`
+```
+
+The heuristic file can similarly be used to point fieldmap scans to their
+intended sequences using a list:
+
+```
+IntendedFor = {
+
+  fieldmap1: ['sub-{SubjectLabel}_{SessionLabel}_task-rest_bold.nii.gz']
+
+}`
+```
+
+Or to programmatically create or manipulate existing Flywheel object labels in
+their BIDS metadata:
+
+```
+def ReplaceSubject(subject_label):
+    '''
+    A function that will remove spaces from a subject label
+    '''
+
+    label_without_spaces = subject_label.replace(' ', '')
+
+    return label_without_spaces
+```
+
+By reserving these keywords for functions and metadata, heuristic files become
+versatile tools for defining and manipulating a wide array of metadata in
+Flywheel BIDS curation.
 
 ### Curation Workflow
 
+For most users, the curation workflow follows that of the numbering above; after
+ingress of a batch of DICOMs from a scan, Flywheel's automated utility gears
+convert the DICOMs to NIfTI files. Users can then begin running
+`fw-heudiconv-tabulate` to gather the information stored in the DICOM headers
+necessary for creating a heuristic. Once the tabulation has been completed, the
+output file can be opened by any program that can read tabular data. Users at
+this stage can begin creating a heuristic file and running
+`fw-heudiconv-curate`, using the `--dry-run` flag to test the heuristic changes
+incrementally with informative logging. When satisfied, users can simply remove
+the `--dry-run` flag to apply the changes. The user can then use
+`fw-heudiconv-validate` to run the BIDS validator on the dataset, or start over
+by removing all BIDS metadata with `fw-heudiconv-clear` **[IMAGE]()**.
 
+Additionally, if being run on the Flywheel UI, each of the commands is available
+as a Flywheel gear. This option can be beneficial for data provenance as all of
+a gear's commands and inputs, as well as outputs and log files, are stored and
+attached to each gear run.
 
 ## `flaudit`
 
+The second module is a Flywheel project auditor, aptly named `flaudit`. The
+module is intended to give Flywheel users a view from 10,000 feet of their
+entire Flywheel project, including a comprehensive visualisation of what
+scanning sequences were collected and their parameters, how each sequence is
+curated into a BIDS valid dataset, what gears ran analyses and their runtimes
+and success rates, and an enumeration of the various analysis workflows that
+have been run on each session **[IMAGE]()**. This information is compiled in an
+HTML report that is portable and can be opened in the Flywheel UI or in any web
+browser.
+
 ### Architecture & Design
+
+Using similar internal machinery as `fw-heudiconv-tabulate`, `flaudit` loops
+over existing data in a project and tabulates information about scanning
+sequences, BIDS metadata, and gear jobs that have been run. These 3 tables are
+saved internally and then passed as input to an R markdown script that generates
+a dynamic HTML report. The HTML report is designed to be easy to read and
+interpret for users at any skill level. The data are also saved as output for
+the user to access and analyse at their own discretion.
+
+# Discussion
