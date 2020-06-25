@@ -1,3 +1,7 @@
+# Introduction
+
+![test](./figures/test.svg)
+
 # Methods
 
 Flywheel Tools is a multiple purpose toolkit for interacting with the Flywheel
@@ -295,7 +299,7 @@ browser.
 
 ### Architecture & Design
 
-Using similar internal machinery as `fw-heudiconv-tabulate`, `flaudit` loops
+Using similar internal machinery to `fw-heudiconv-tabulate`, `flaudit` loops
 over existing data in a project and tabulates information about scanning
 sequences, BIDS metadata, and gear jobs that have been run. These 3 tables are
 saved internally and then passed as input to an R markdown script that generates
@@ -304,3 +308,11 @@ interpret for users at any skill level. The data are also saved as output for
 the user to access and analyse at their own discretion.
 
 # Discussion
+
+As the neuroimaging community embraces Big Data and the various platforms
+available for storage and analysis, it is becoming increasingly important for
+researchers to eschew the *ad hoc* analysis procedures previously run on a
+single machine or cluster. Instead, cloud-based platforms like Flywheel provide
+opportunities for more reproducible, reliable, and shareable science. Flywheel
+Tools provides software that maximizes these opportunities on the Flywheel
+platform.
