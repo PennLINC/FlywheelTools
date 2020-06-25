@@ -1,6 +1,6 @@
 # Introduction
 
-![test](./figures/test.svg)
+
 
 # Methods
 
@@ -278,7 +278,9 @@ this stage can begin creating a heuristic file and running
 incrementally with informative logging. When satisfied, users can simply remove
 the `--dry-run` flag to apply the changes. The user can then use
 `fw-heudiconv-validate` to run the BIDS validator on the dataset, or start over
-by removing all BIDS metadata with `fw-heudiconv-clear` **[IMAGE]()**.
+by removing all BIDS metadata with `fw-heudiconv-clear`.
+
+![workflow](./figures/fw_heudiconv_workflow.png)
 
 Additionally, if being run on the Flywheel UI, each of the commands is available
 as a Flywheel gear. This option can be beneficial for data provenance as all of
