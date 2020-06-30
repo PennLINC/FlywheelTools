@@ -1,32 +1,65 @@
 # Introduction
 
+Data curation in the field of neuroimaging is a fundamental task necessary for
+creating scalable, reproducible science. As the volume, velocity, and variety of
+these data sets increases and requires greater computational efficiency and
+expertise, many researchers have opted to have their data hosted by private
+vendors whose infrastructure may mitigate some of the challenges of storing,
+organising, and curating massive amounts of data. One such vendor, Flywheel,
+provides many solutions for these challenges.
+However, as the scientific landscape expands, researchers
+ultimately must be able to curate their data themselves on a case-by-case basis
+to meet novel scientific standards. Additionally, cases inevitably arise in
+which boilerplate curation tools are unable to correctly curate legacy data,
+leading to the need for either tedious and error-prone manual curation, or the
+need for highly skilled programmers and engineers to assist in automated
+curation.
+Efforts to formalize the curation of data in neuroimaging include
+the Brain Imaging Data Structure (BIDS), an open-source
+specification on how to store and share neuroimaging files. This specification
+is in continuous development with input from the community, and provides a
+flexible framework for the development of software pipelines and applications.
+Flywheel allows users to curate their data using BIDS, but lacks sufficient
+flexibility for the large variety of use-cases in neuroimaging data warehousing.
+
+This increasing ubiquity and usefulness of BIDS-valid data sets motivated the
+development of FlywheelTools, a multi-purpose toolkit for interacting with and
+curating data on the Flywheel platform to meet BIDS standards.
 
 
 # Methods
 
-Flywheel Tools is a multiple purpose toolkit for interacting with the Flywheel
-platform. The toolkit allows users to follow a reproducible workflow for BIDS
-curation and audit of their data, that includes 1) inspection of sequences; 2)
-design of a curation heuristic; 3) heuristic testing and implementation; 3)
-curated data inspection and export; and finally 4) audit of data and analyses.
+The FlywheelTools toolkit allows users to follow a reproducible
+workflow for BIDS curation and audit of their data. This workflow typically
+includes: inspection of sequences collected during a study; design of a
+curation schema; implementation of curation schema;
+curated data inspection and export; and finally audit of data and analyses (see
+figure \ref{main_workflow}).
+
+![Flywheel Tools Workflow\label{main_workflow}](./figures/main_workflow.png)
 
 ## Programming Languages & Technologies
 
 Flywheel Tools is built primarily in Python 3.6 **[CITE]()** in order to
-leverage its highly accessible SDK. Additionally, R 3.4.1, with its
-extensive variety of libraries for creating high-quality data analysis reports,
-is used for HTML report generation **[CITE]()**. For reproducibility and
-workflow management, Flywheel Tools' modules are packaged in
-version-controlled software containers built and managed in Docker **[CITE]()**.
+leverage its highly accessible SDK. Additionally, R 3.4.1 is used for HTML
+report generation **[CITE]()**. For reproducibility and workflow management,
+Flywheel Tools' modules are packaged in version-controlled software containers
+built and managed in Docker **[CITE]()**.
 Lastly, the Flywheel Tools package relies on users adopting the Brain Imaging
-Data Structure (BIDS) paradigm to curate their data. BIDS is a paradigm for
-reproducible and collaborative data storage and is growing rapidly in the
-neuroimaging community **[CITE]()**, and hence BIDS compatibility is included on
-the Flywheel platform.
+Data Structure (BIDS) to curate their data. BIDS has rapidly evolved to become
+the field standard directory standard in the neuroimaging community for
+reproducible data organization **[CITE]()**. Importantly, BIDS has a large
+community of participants contributing to its development and adoption, and
+proposals for BIDS schema go through rigorous community testing and approval
+before being added. This leads to a trustworthy common framework for data
+curation shared amongst researchers. Software developers leverage this ubiquity
+by creating analysis and processing pipelines that can operate directly on BIDS
+data sets as inputs, enhancing reproducibility and interoperability on various
+software platforms.
 
 ## Flywheel
 
-Flywheel is a big data management and analysis platform for research, which
+Flywheel is a data management and analysis platform for research, which
 lends itself well to neuroimaging. The platform focuses heavily on collaborative
 and reproducible science. User-facing components of the platform itself are the
 Web User Interface (UI), the Software Development Kit (SDK), and the Application
@@ -40,32 +73,29 @@ interface, users are able to upload, view, download, and analyse data with ease
 and simplicity. However, accomplishing tasks with many repetitive steps or a
 large number of subjects/sessions to iterate over can be tiresome and
 error-prone. Alongside knowledge of navigating the web UI, many users also make
-use of the SDK to munge and analyse data programmatically.
+use of the SDK to manipulate and analyse data programmatically.
 
 ### Flywheel API & SDK
 
 Flywheel's database utilises MongoDB for data storage and access, meaning that
 all Flywheel data is represented by hierarchical relationships between document
-objects. This has allowed developers to create and store complex structures with
+objects. This allows users to create and store complex structures with
 ease, and query data rapidly **[CITE]()**. In order to access this data,
 Flywheel uses a RESTful Application Programming Interface (REpresentational
 State Transfer) **[CITE]()**, and hence each document or data object is
 accessible through a a specific URL that a web browser or SDK can access by
 requesting the data and waiting for a response from the server. The Flywheel
-Python SDK provides a powerful interface for inspecting, munging, and
-manipulating data through this API, by standardising this underlying data model
-into Pythonic Objects, the flywheel SDK is effectively an object relationship
-mapper (ORM) somewhat similar to the popular SQLAlchemy package. Programming
-with the Python SDK involves objects and methods that any user with Python
-programming experience can quickly pick up.
+Python SDK provides a powerful interface for inspecting and manipulating data
+through this API. By standardising this underlying data model into Pythonic
+Objects, the flywheel SDK is effectively an object relationship
+mapper (ORM), similar to the popular SQLAlchemy software.
 
 ### Flywheel Data Model
 
-Once abstracted in Python, Flywheel's data model is simple and should be
-familiar to neuroimaging researchers. Objects follow a specific hierarchical
+Objects in Flywheel's data model follow a specific hierarchical
 structure **([IMAGE]())** — at the top level is the FlyWheel *instance*, a
-process running that serves the API to users (for example, a
-University). Within the FlyWheel instance, there are multiple *groups*, which
+process running that serves the API to users (for example, a neuroimaging
+center). Within the FlyWheel instance, there are multiple *groups*, which
 are typically labs or research units that collaborate on one or more
 *projects*. Each project object can have one or many *subjects* (i.e.
 participants), and each subject can have one or many *sessions* (i.e. scanning
@@ -75,15 +105,15 @@ examination (e.g. rs-fMRI, DWI, PET), and under each acquisition is *attached*
 the data file associated with the sequence (e.g. a NIfTI file or DICOM).
 Note that a file can be attached to any object type, and each object can have
 metadata associated with it. Hence, a subject object may have de-identified
-demographic metadata associated to that participant, and the object may also
-have a self-report scale attached to it as a text file. A notable exception to
+demographic metadata associated to that participant, and the subject may also
+have a text file attached to it (such as clinical data). A notable exception to
 the hierarchical structure rule is the analysis object, which behaves in much
 the same way as others but can be a child object of any other object, allowing
 researchers to create analyses of entire projects, for example, each with their
 own associated metadata and files (such as inputs and outputs).
 
 Abstracting this data model in Python results in simple hierarchical objects,
-each with setter's and getter's for handling metadata and files, and methods for
+each with methods for handling metadata and files, and methods for
 accomplishing object-specific tasks like traversing the hierarchical structure
 or running analyses. Flywheel Tools' modules make use of this data model to
 accomplish a wide range of tasks.
@@ -92,14 +122,14 @@ accomplish a wide range of tasks.
 
 Flywheel encourages the use of pre-packaged computational workflows, called
 *gears*. Gears are run by virtual machines/containers using Docker and hence are
-version-controlled and software/platform agnostic **[CITE]()**, and are created
-to accomplish the tasks such as data manipulation, pre-processing, analysis, and
+version-controlled and software/platform agnostic **[CITE]()**. Gears can
+accomplish tasks such as data manipulation, pre-processing, analysis, and
 summarisation. In addition to the multitude of gears available on the platform,
 users are able to package their own software in a gear and use it for running
-analysis workflows on their Flywheel data, via the web UI or SDK. Deciding on
-whether to accomplish a task using the web UI, programmatically using the SDK,
-or by wrapping it as a workflow into a gear, depends on the complexity and
-frequency of the task **[IMAGE]()**. Gears can take existing Flywheel data, such
+analysis workflows on their Flywheel data, via the web UI or SDK. the complexity
+and frequency of the task suggests whether to accomplish a task using the web
+UI, programmatically using the SDK, or by wrapping it as a workflow into a gear,
+depends on  **[IMAGE]()**. Gears can take existing Flywheel data, such
 as images or file attachments, as inputs to the workflow, and can be created
 with clickable configuration options. Once a workflow has completed running,
 Flywheel collects any files remaining in the container's pre-defined output
@@ -110,7 +140,7 @@ as input to a subsequent gear themselves.
 
 # Results
 
-We implemented the Flywheel Tools package using the Flywheel SDK to enable easy
+Flywheel Tools is implemented using the Flywheel SDK to enable easy
 inspection, curation, validation, and audit of Flywheel data through a handful
 of user-friendly gears and command-line interfaces.
 
@@ -118,8 +148,8 @@ The first module of the package is called `fw-heudiconv`, and is largely
 inspired by the popular HeuDiConv Python package **[CITE]()**. `fw-heudiconv` is
 a multi-part toolbox for reprodicible curation of neuroimaging data into BIDS on
 Flywheel. The second module, `flaudit`, is a tool for accomplishing a complete
-audit of a Flywheel project, giving users a view of their dataset from 10,000
-feet.
+audit of a Flywheel project, giving users a broad overview of the key elements
+of their data set.
 
 ## `fw-heudiconv`
 
@@ -143,7 +173,7 @@ on the Flywheel UI. The gear is managed by Docker containerisation, meaning that
 versioning is reliable and reproducible. There are a number of commands
 available in `fw-heudiconv`, and each of them starts by querying data from
 Flywheel. Users can filter their queries, so as to operate on an entire Flywheel
-project, a subset of subjects, or a subset of sessions, and each command has the
+project, a subset of subjects, or a subset of sessions. Notably each command has the
 ability to safely test and evaluate its effects without manipulating metadata on
 Flywheel or writing data to disk. In particular, there are five commands users
 can access:
@@ -211,33 +241,20 @@ file, such as:
 t1w = 'subject-{SubjectLabel}_session-{SessionLabel}_T1w.nii.gz'
 ```
 
-(where the `SubjectLabel` and `SessionLabel` portions are expected to be
-automatically generated for each subject and session). After a DICOM's
+Where the `SubjectLabel` and `SessionLabel` portions are expected to be
+automatically generated for each subject and session. After a DICOM's
 `SeriesDescription` field is added to the `seqInfo`'s `SeriesDescription`
 attribute, the user can create simple boolean rules to check if the string 'T1w'
 is in the `SeriesDescription`. If such a rule is met, this acquisition and its
-NIfTI file must be assigned to the T1-weighted image naming template. The NIfTI
+NIfTI file will be assigned to the T1-weighted image naming template. The NIfTI
 file will ultimately have this BIDS naming added to its metadata, and be named
 correctly when exported to a filesystem.
 
 In addition to setting naming templates, the heuristic file can also be used to
 hardcode and assign metadata in BIDS. These data are hard-coded into the file
 object's metadata on Flywheel, and are assigned by using specially reserved
-functions and keywords in `fw-heudiconv`. For example, if a user wanted to
-hard-code Repetition Time for a T1 scan, this can be specified in a heuristic by
-creating a Python dictionary that points a dictionary of metadata to a template.
-In this example:
-
-```
-MetadataExtras = {
-
-  t1w: {'RepetitionTime': 1.018}
-
-}`
-```
-
-The heuristic file can similarly be used to point fieldmap scans to their
-intended sequences using a list:
+functions and keywords in `fw-heudiconv`. For example, the heuristic file can
+be used to point fieldmap scans to their intended sequences using a list:
 
 ```
 IntendedFor = {
@@ -247,27 +264,13 @@ IntendedFor = {
 }`
 ```
 
-Or to programmatically create or manipulate existing Flywheel object labels in
-their BIDS metadata:
-
-```
-def ReplaceSubject(subject_label):
-    '''
-    A function that will remove spaces from a subject label
-    '''
-
-    label_without_spaces = subject_label.replace(' ', '')
-
-    return label_without_spaces
-```
-
-By reserving these keywords for functions and metadata, heuristic files become
+By reserving select keywords for functions and metadata, heuristic files become
 versatile tools for defining and manipulating a wide array of metadata in
 Flywheel BIDS curation.
 
 ### Curation Workflow
 
-For most users, the curation workflow follows that of the numbering above; after
+For most users, the curation workflow follows the sequence detailed above; after
 ingress of a batch of DICOMs from a scan, Flywheel's automated utility gears
 convert the DICOMs to NIfTI files. Users can then begin running
 `fw-heudiconv-tabulate` to gather the information stored in the DICOM headers
@@ -280,7 +283,7 @@ the `--dry-run` flag to apply the changes. The user can then use
 `fw-heudiconv-validate` to run the BIDS validator on the dataset, or start over
 by removing all BIDS metadata with `fw-heudiconv-clear`.
 
-![workflow](./figures/fw_heudiconv_workflow.png)
+
 
 Additionally, if being run on the Flywheel UI, each of the commands is available
 as a Flywheel gear. This option can be beneficial for data provenance as all of
@@ -290,13 +293,13 @@ attached to each gear run.
 ## `flaudit`
 
 The second module is a Flywheel project auditor, aptly named `flaudit`. The
-module is intended to give Flywheel users a view from 10,000 feet of their
-entire Flywheel project, including a comprehensive visualisation of what
-scanning sequences were collected and their parameters, how each sequence is
-curated into a BIDS valid dataset, what gears ran analyses and their runtimes
-and success rates, and an enumeration of the various analysis workflows that
-have been run on each session **[IMAGE]()**. This information is compiled in an
-HTML report that is portable and can be opened in the Flywheel UI or in any web
+module is intended to give Flywheel users a broad overview of their
+entire Flywheel project. Features of this overview include a comprehensive
+visualization of scanning sequences and their parameters; the corresponding BIDS
+curated result of each sequence; an enumeration of gear analyses and their
+runtimes and success rates; and a visualization of the various analysis
+workflows run on each session **[IMAGE]()**. This information is compiled in a
+portable HTML report that can be opened in the Flywheel UI or in any web
 browser.
 
 ### Architecture & Design
@@ -305,8 +308,7 @@ Using similar internal machinery to `fw-heudiconv-tabulate`, `flaudit` loops
 over existing data in a project and tabulates information about scanning
 sequences, BIDS metadata, and gear jobs that have been run. These 3 tables are
 saved internally and then passed as input to an R markdown script that generates
-a dynamic HTML report. The HTML report is designed to be easy to read and
-interpret for users at any skill level. The data are also saved as output for
+a dynamic HTML report. The data are also saved as output for
 the user to access and analyse at their own discretion.
 
 # Discussion
