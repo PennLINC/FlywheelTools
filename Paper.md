@@ -1,3 +1,10 @@
+---
+title: "Flywheel Tools"
+subtitle: "Data Curation and Manipulation on the Flywheel Platform"
+author: Tinashe M. Tapera, MSc
+bibliography: bibliography.bib
+---
+
 # Introduction
 
 Data curation in the field of neuroimaging is a fundamental task necessary for
@@ -40,15 +47,15 @@ figure \ref{main_workflow}).
 
 ## Programming Languages & Technologies
 
-Flywheel Tools is built primarily in Python 3.6 **[CITE]()** in order to
-leverage its highly accessible SDK. Additionally, R 3.4.1 is used for HTML
-report generation **[CITE]()**. For reproducibility and workflow management,
+Flywheel Tools is built primarily in Python 3.6 [@10.5555/1593511] in order to
+leverage its highly accessible SDK. Additionally, R 3.4.1 [@Rversion] is used
+for HTML report generation. For reproducibility and workflow management,
 Flywheel Tools' modules are packaged in version-controlled software containers
-built and managed in Docker **[CITE]()**.
+built and managed in Docker [@10.5555/2600239.2600241].
 Lastly, the Flywheel Tools package relies on users adopting the Brain Imaging
 Data Structure (BIDS) to curate their data. BIDS has rapidly evolved to become
 the field standard directory standard in the neuroimaging community for
-reproducible data organization **[CITE]()**. Importantly, BIDS has a large
+reproducible data organization [@gorgolewski2016brain]. Importantly, BIDS has a large
 community of participants contributing to its development and adoption, and
 proposals for BIDS schema go through rigorous community testing and approval
 before being added. This leads to a trustworthy common framework for data
@@ -80,9 +87,9 @@ use of the SDK to manipulate and analyse data programmatically.
 Flywheel's database utilises MongoDB for data storage and access, meaning that
 all Flywheel data is represented by hierarchical relationships between document
 objects. This allows users to create and store complex structures with
-ease, and query data rapidly **[CITE]()**. In order to access this data,
+ease, and query data rapidly [@10.5555/2207997]. In order to access this data,
 Flywheel uses a RESTful Application Programming Interface (REpresentational
-State Transfer) **[CITE]()**, and hence each document or data object is
+State Transfer) [@biehl2016restful], and hence each document or data object is
 accessible through a a specific URL that a web browser or SDK can access by
 requesting the data and waiting for a response from the server. The Flywheel
 Python SDK provides a powerful interface for inspecting and manipulating data
@@ -122,7 +129,7 @@ accomplish a wide range of tasks.
 
 Flywheel encourages the use of pre-packaged computational workflows, called
 *gears*. Gears are run by virtual machines/containers using Docker and hence are
-version-controlled and software/platform agnostic **[CITE]()**. Gears can
+version-controlled and software/platform agnostic. Gears can
 accomplish tasks such as data manipulation, pre-processing, analysis, and
 summarisation. In addition to the multitude of gears available on the platform,
 users are able to package their own software in a gear and use it for running
@@ -145,7 +152,7 @@ inspection, curation, validation, and audit of Flywheel data through a handful
 of user-friendly gears and command-line interfaces.
 
 The first module of the package is called `fw-heudiconv`, and is largely
-inspired by the popular HeuDiConv Python package **[CITE]()**. `fw-heudiconv` is
+inspired by the popular HeuDiConv Python package [^1]. `fw-heudiconv` is
 a multi-part toolbox for reprodicible curation of neuroimaging data into BIDS on
 Flywheel. The second module, `flaudit`, is a tool for accomplishing a complete
 audit of a Flywheel project, giving users a broad overview of the key elements
@@ -320,3 +327,9 @@ single machine or cluster. Instead, cloud-based platforms like Flywheel provide
 opportunities for more reproducible, reliable, and shareable science. Flywheel
 Tools provides software that maximizes these opportunities on the Flywheel
 platform.
+
+\newpage
+
+# Bibliography
+
+[^1]: https://github.com/nipy/heudiconv
