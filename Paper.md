@@ -41,9 +41,7 @@ workflow for BIDS curation and audit of their data. This workflow typically
 includes: inspection of sequences collected during a study; design of a
 curation schema; implementation of curation schema;
 curated data inspection and export; and finally audit of data and analyses (see
-figure \ref{main_workflow}).
-
-![Flywheel Tools Workflow\label{main_workflow}](./figures/main_workflow.png)
+Figure \ref{main_workflow}).
 
 ## Programming Languages & Technologies
 
@@ -69,8 +67,8 @@ software platforms.
 Flywheel is a data management and analysis platform for research, which
 lends itself well to neuroimaging. The platform focuses heavily on collaborative
 and reproducible science. User-facing components of the platform itself are the
-Web User Interface (UI), the Software Development Kit (SDK), and the Application
-Programming Interface (API) ([IMAGE HERE]()).
+web User Interface (UI), the Software Development Kits (SDK), and the Application
+Programming Interface (API) (Figure \ref{architecture}).
 
 ### Flywheel Web UI
 
@@ -327,6 +325,12 @@ single machine or cluster. Instead, cloud-based platforms like Flywheel provide
 opportunities for more reproducible, reliable, and shareable science. Flywheel
 Tools provides software that maximizes these opportunities on the Flywheel
 platform.
+
+\newpage
+
+![Flywheel Tools Workflow\label{main_workflow}](./figures/main_workflow.png)
+
+![Flywheel General Architecture\label{architecture}](./figures/architecture.png)
 
 \newpage
 
