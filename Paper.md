@@ -7,6 +7,24 @@ bibliography: bibliography.bib
 
 # Introduction
 
+Paragraph 1.  The challenge of reproducible neuroscience. What is the state of the field / why is this needed? End paragraph by pointing out two major advances in reproducibility: imaging databases and bids
+
+
+
+Paragraph 2.   Imaging databases. How do they help reproducibility? What platforms are out there? How does flywheel fit and why is it good?
+
+
+
+Paragraph 3.  BIDS – a major response to the reproducibility challenge. Would define what BIDS seeks to achieve, how it was developed, and what does it get users (inc BIDS APPS).
+
+
+
+Paragraph 4.  Heudiconv.  How do users usually get their data into BIDS?  What is a typical heudiconv workflow?  End by noting that this workflow is NOT present in flywheel at present, and that reproducible curation of data is absolutely essential for true reproducible science .  This sets up the gap in the field / unmet need for your product.
+
+
+
+Paragraph 5: Goals of paper.  Say explicitly what you are trying to do with this tool.  Orient reader to outline of paper.  Close with a strong statement on the functionality of the tool.
+
 Data curation in the field of neuroimaging is a fundamental task necessary for
 creating scalable, reproducible science. As the volume, velocity, and variety of
 these data sets increases and requires greater computational efficiency and
