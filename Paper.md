@@ -98,9 +98,9 @@ mapper (ORM), similar to the popular SQLAlchemy software.
 ### Flywheel Data Model
 
 Objects in Flywheel's data model follow a specific hierarchical
-structure **([IMAGE]())** — at the top level is the FlyWheel *instance*, a
+structure (Figure \ref{datamodel}) — at the top level is the Flywheel *instance*, a
 process running that serves the API to users (for example, a neuroimaging
-center). Within the FlyWheel instance, there are multiple *groups*, which
+center). Within the Flywheel instance, there are multiple *groups*, which
 are typically labs or research units that collaborate on one or more
 *projects*. Each project object can have one or many *subjects* (i.e.
 participants), and each subject can have one or many *sessions* (i.e. scanning
@@ -131,10 +131,9 @@ version-controlled and software/platform agnostic. Gears can
 accomplish tasks such as data manipulation, pre-processing, analysis, and
 summarisation. In addition to the multitude of gears available on the platform,
 users are able to package their own software in a gear and use it for running
-analysis workflows on their Flywheel data, via the web UI or SDK. the complexity
+analysis workflows on their Flywheel data, via the web UI or SDK. The complexity
 and frequency of the task suggests whether to accomplish a task using the web
-UI, programmatically using the SDK, or by wrapping it as a workflow into a gear,
-depends on  **[IMAGE]()**. Gears can take existing Flywheel data, such
+UI, programmatically using the SDK, or by wrapping it as a workflow into a gear (Figure \ref{complexityfrequency}). Gears can take existing Flywheel data, such
 as images or file attachments, as inputs to the workflow, and can be created
 with clickable configuration options. Once a workflow has completed running,
 Flywheel collects any files remaining in the container's pre-defined output
@@ -328,9 +327,15 @@ platform.
 
 \newpage
 
+# Figures
+
 ![Flywheel Tools Workflow\label{main_workflow}](./figures/main_workflow.png)
 
 ![Flywheel General Architecture\label{architecture}](./figures/architecture.png)
+
+![Flywheel Data Model\label{datamodel}](./figures/data-model.png)
+
+![Decision Framework for Accomplishing Tasks on Flywheel\label{complexityfrequency}](./figures/FlywheelTools-complexity-frequency.png)
 
 \newpage
 
