@@ -7,23 +7,31 @@ bibliography: bibliography.bib
 
 # Introduction
 
-Paragraph 1.  The challenge of reproducible neuroscience. What is the state of the field / why is this needed? End paragraph by pointing out two major advances in reproducibility: imaging databases and bids
+> Paragraph 1.  The challenge of reproducible neuroscience. What is the state of the field / why is this needed? End paragraph by pointing out two major advances in reproducibility: imaging databases and bids
+
+As the field of neuroimaging continues to grow, the datasets being collected
+have likewise seen rapid growth in volume, variety, and velocity. This expansion
+provides researchers with novel opportunities to answer questions using much
+larger sample sizes, but also presents challenges to reproducibility. Researchers
+can take different steps on different operating systems while attempting to
+carry out the same analyses or replicate results, and such small methodical
+differences can equate to disparate analysis results **[CITE examples?]**. Two major
+advances in the field help to stave off the reproducibility challenge: imaging
+databases, and Brain Imaging Data Structure (BIDS).
+
+> Paragraph 2.   Imaging databases. How do they help reproducibility? What platforms are out there? How does flywheel fit and why is it good?
 
 
 
-Paragraph 2.   Imaging databases. How do they help reproducibility? What platforms are out there? How does flywheel fit and why is it good?
+> Paragraph 3.  BIDS – a major response to the reproducibility challenge. Would define what BIDS seeks to achieve, how it was developed, and what does it get users (inc BIDS APPS).
 
 
 
-Paragraph 3.  BIDS – a major response to the reproducibility challenge. Would define what BIDS seeks to achieve, how it was developed, and what does it get users (inc BIDS APPS).
+> Paragraph 4.  Heudiconv.  How do users usually get their data into BIDS?  What is a typical heudiconv workflow?  End by noting that this workflow is NOT present in flywheel at present, and that reproducible curation of data is absolutely essential for true reproducible science .  This sets up the gap in the field / unmet need for your product.
 
 
 
-Paragraph 4.  Heudiconv.  How do users usually get their data into BIDS?  What is a typical heudiconv workflow?  End by noting that this workflow is NOT present in flywheel at present, and that reproducible curation of data is absolutely essential for true reproducible science .  This sets up the gap in the field / unmet need for your product.
-
-
-
-Paragraph 5: Goals of paper.  Say explicitly what you are trying to do with this tool.  Orient reader to outline of paper.  Close with a strong statement on the functionality of the tool.
+> Paragraph 5: Goals of paper.  Say explicitly what you are trying to do with this tool.  Orient reader to outline of paper.  Close with a strong statement on the functionality of the tool.
 
 Data curation in the field of neuroimaging is a fundamental task necessary for
 creating scalable, reproducible science. As the volume, velocity, and variety of
