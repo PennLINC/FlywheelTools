@@ -13,19 +13,33 @@ As the field of neuroimaging continues to grow, the datasets being collected
 have likewise seen rapid growth in volume, variety, and velocity. This expansion
 provides researchers with novel opportunities to answer questions using much
 larger sample sizes, but also presents challenges to reproducibility. Researchers
-can take different steps on different operating systems while attempting to
-carry out the same analyses or replicate results, and such small methodical
-differences can equate to disparate analysis results **[CITE examples?]**. Two major
-advances in the field help to stave off the reproducibility challenge: imaging
+carrying out different steps on different operating systems while attempting to
+reproduce an analysis often produce disparate and irreplicable results **[CITE examples?]()**.
+Two major advances in the field help to stave off the reproducibility challenge: imaging
 databases, and Brain Imaging Data Structure (BIDS).
 
 > Paragraph 2.   Imaging databases. How do they help reproducibility? What platforms are out there? How does flywheel fit and why is it good?
 
-
+Imaging databases have have become powerful software tools for storing, accessing, and
+analyzing imaging data in a reproducible manner. They reduce considerable
+computational and storage overhead by ensuring data is stored and structured
+efficiently. Without the technical experience and expertise, finding
+appropriate resources for storage space and computation time can be a
+challenging and laborious task. Fortunately, many imaging databases come
+equipped with such decisions already made for the user, and with a plethora of
+customizable tools. Importantly, these softwares provide opportunities for
+strict data provenance, where all changes made to a dataset can be tracked,
+recorded, and reproduced at any time. These imaging databases can be open-
+source, or commercial; notable examples include **[CITE examples]()**.
+Flywheel, the focus of this paper, is a recent addition to the list of
+commercially available databases. Their model strongly emphasizes the use of
+flexible data storage, prepackaged data analysis pipelines, and transparent data provenance.
 
 > Paragraph 3.  BIDS – a major response to the reproducibility challenge. Would define what BIDS seeks to achieve, how it was developed, and what does it get users (inc BIDS APPS).
 
-
+In addition to the rise of powerful database options, the neuroimaging community
+has also developed data storage standards, most notably BIDS, to aid scientific
+reproducibility.
 
 > Paragraph 4.  Heudiconv.  How do users usually get their data into BIDS?  What is a typical heudiconv workflow?  End by noting that this workflow is NOT present in flywheel at present, and that reproducible curation of data is absolutely essential for true reproducible science .  This sets up the gap in the field / unmet need for your product.
 
