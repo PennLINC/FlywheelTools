@@ -9,13 +9,13 @@ bibliography: bibliography.bib
 
 > Paragraph 1.  The challenge of reproducible neuroscience. What is the state of the field / why is this needed? End paragraph by pointing out two major advances in reproducibility: imaging databases and bids
 
-As the field of neuroimaging continues to grow, the datasets being collected
-have likewise seen rapid growth in volume, variety, and velocity. This expansion
+As the field of neuroimaging continues to grow, datasets being collected have
+seen similar growth in volume, variety, and velocity. This expansion
 provides researchers with novel opportunities to answer questions using much
 larger sample sizes, but also presents challenges to reproducibility. Researchers
-carrying out different steps on different operating systems while attempting to
-reproduce an analysis often produce disparate and irreplicable results **[CITE examples?]()**.
-Two major advances in the field help to stave off the reproducibility challenge: imaging
+carrying out different tasks on different operating systems, while attempting to
+reproduce an analysis, can often end up with disparate and irreplicable results **[CITE examples?]()**.
+Two major advances in the field help to stave off this reproducibility challenge: imaging
 databases, and Brain Imaging Data Structure (BIDS).
 
 > Paragraph 2.   Imaging databases. How do they help reproducibility? What platforms are out there? How does flywheel fit and why is it good?
@@ -37,42 +37,80 @@ flexible data storage, prepackaged data analysis pipelines, and transparent data
 
 > Paragraph 3.  BIDS – a major response to the reproducibility challenge. Would define what BIDS seeks to achieve, how it was developed, and what does it get users (inc BIDS APPS).
 
-In addition to the rise of powerful database options, the neuroimaging community
-has also developed data storage standards, most notably BIDS, to aid scientific
-reproducibility.
+In addition to the rise of database options, the neuroimaging community
+has also developed data storage standards — most notably the Brain Imaging Data
+Structure (BIDS) — to improve scientific reproducibility. BIDS is an open source
+standard for neuroimaging data storage that specifies how files should be
+named and how directories should be organized **[CITE nature paper]()**. The benefits of adopting BIDS
+include:
+
+- Minimized curation efforts, as datasets can be easily understood, operated
+on, and shared within and between sites;
+- Reduced usage error, as important metadata are explicitly declared in each
+file's name and path;
+- Access to software tools and pipelines (BIDS apps) that can automatically
+configure themselves as necessary, as metadata is machine-readable.
+
+BIDS was initially developed at Stanford in 2015, and through open-source community
+participation has grown into a globally recognised neuroimaging standard **[CITE ?]()**,
+publishing an official *BIDS specification* defining the currently practices and
+schemas. The spec publication is governed by both community input, and a
+democratically elected steering committee from members of the community.
+A wide array of BIDS apps are available in the BIDS ecosystem – notably, the
+BIDS validator is a common tool for validating datasets after they
+have been curated into BIDS **[CITE ?]()**. Importantly, the BIDS specification
+is updated to match the latest imaging techniques and sequences through community
+participation and open governance, which allows BIDS apps to be continually
+developed for cutting-edge science. Hence, imaging databases like Flywheel have
+adopted BIDS standards and BIDS apps as core functionalities that are reliable,
+flexible to change, and serve to increase reproducibility.
 
 > Paragraph 4.  Heudiconv.  How do users usually get their data into BIDS?  What is a typical heudiconv workflow?  End by noting that this workflow is NOT present in flywheel at present, and that reproducible curation of data is absolutely essential for true reproducible science .  This sets up the gap in the field / unmet need for your product.
 
+To further reduce error and increase reproducibility, researchers can choose to
+curate their datasets into BIDS programmatically with version-controlled
+software. The most common BIDS curation tool is `HeuDiConv` **[CITE heudiconv website?]()**,
+(shorthand for *Heuristic DICOM Converter*). `HeuDiConv` curates data using
+simple heuristics that map DICOM files to BIDS paths and file names. These
+heuristics are defined in machine-readable Python scripts, allowing them to be
+version controlled for reproducibility. For the typical user, BIDS curation with
+`HeuDiConv` follows a simple, yet highly flexible workflow using `HeuDiConv` commands and the BIDS validator tool **[CITE bids validator?]()**:
 
+1. Scrape DICOM metadata from the dataset
+2. Examine metadata to find scan parameters that discriminate files
+3. Create a heuristic script mapping DICOM metadata to BIDS-valid NIfTI file names, by
+applying boolean logic to scan parameters
+4. Convert DICOMs to NIfTI files and apply mapping with the the HeuDiConv curator
+5. Use the BIDS validator to assess results, adjust heuristic, and repeat
+curation as necessary
 
 > Paragraph 5: Goals of paper.  Say explicitly what you are trying to do with this tool.  Orient reader to outline of paper.  Close with a strong statement on the functionality of the tool.
 
-Data curation in the field of neuroimaging is a fundamental task necessary for
-creating scalable, reproducible science. As the volume, velocity, and variety of
-these data sets increases and requires greater computational efficiency and
-expertise, many researchers have opted to have their data hosted by private
-vendors whose infrastructure may mitigate some of the challenges of storing,
-organising, and curating massive amounts of data. One such vendor, Flywheel,
-provides many solutions for these challenges.
-However, as the scientific landscape expands, researchers
-ultimately must be able to curate their data themselves on a case-by-case basis
-to meet novel scientific standards. Additionally, cases inevitably arise in
-which boilerplate curation tools are unable to correctly curate legacy data,
-leading to the need for either tedious and error-prone manual curation, or the
-need for highly skilled programmers and engineers to assist in automated
-curation.
-Efforts to formalize the curation of data in neuroimaging include
-the Brain Imaging Data Structure (BIDS), an open-source
-specification on how to store and share neuroimaging files. This specification
-is in continuous development with input from the community, and provides a
-flexible framework for the development of software pipelines and applications.
-Flywheel allows users to curate their data using BIDS, but lacks sufficient
-flexibility for the large variety of use-cases in neuroimaging data warehousing.
+`HeuDiConv` establishes a robust and reproducible workflow for BIDS curation
+that has been widely adopted throughout the neuroimaging community **[CITE ?]()**.
+However, although BIDS is supported on Flywheel, the platform's functionality
+only offers automated BIDS curation of incoming datasets, without the option to
+effectively and flexibly curate data using a `HeuDiConv`-like workflow. This can
+lead to invalid BIDS curation on Flywheel in a handful of crucial scenarios:
 
-This increasing ubiquity and usefulness of BIDS-valid data sets motivated the
-development of FlywheelTools, a multi-purpose toolkit for interacting with and
-curating data on the Flywheel platform to meet BIDS standards.
+- Importing legacy datasets to Flywheel that may not have originally been well
+suited for BIDS;
+- Importing novel imaging modalities or scanning sequences not yet defined in the
+BIDS specification;
+- Importing datasets with significant errors that can't be handles by the
+automated system.
 
+In order to meet the need for a more reproducible and reliable BIDS curation
+workflow on Flywheel, this paper presents the `FlywheelTools` package: a
+software toolkit designed to implement a more flexible BIDS curation workflow on
+the Flywheel platform, and expand on current Flywheel functionality for
+addressing BIDS curation. In this paper, we describe the Flywheel platform,
+BIDS, and the software design approach in further detail in the Methods section.
+In the Results section, we demonstrate a reproducible BIDS curation workflow on
+Flywheel. We believe `FlywheelTools` brings an array of powerful functionality
+for curating data on the Flywheel database and interacting with BIDS data on the
+platform, whilst maintaining the simplicity and usability of the common
+`HeuDiConv` workflow and expanding on Flywheel's BIDS functionality.  
 
 # Methods
 
@@ -342,9 +380,10 @@ entire Flywheel project. Features of this overview include a comprehensive
 visualization of scanning sequences and their parameters; the corresponding BIDS
 curated result of each sequence; an enumeration of gear analyses and their
 runtimes and success rates; and a visualization of the various analysis
-workflows run on each session **[IMAGE]()**. This information is compiled in a
-portable HTML report that can be opened in the Flywheel UI or in any web
-browser.
+workflows run on each session (Figures \ref{sequences_plot},
+\ref{sequences_table}, \ref{bids_curation}, \ref{bids_curation}). This
+information is compiled in a portable HTML report that can be opened in the
+Flywheel UI or in any web browser.
 
 ### Architecture & Design
 
@@ -376,6 +415,14 @@ platform.
 ![Flywheel Data Model\label{datamodel}](./figures/data-model.png)
 
 ![Decision Framework for Accomplishing Tasks on Flywheel\label{complexityfrequency}](./figures/FlywheelTools-complexity-frequency.png)
+
+![Plot Enumerating Available Sequences in a Flywheel Project\label{sequences_plot}](./figures/sequences_plot.png)
+
+![Interactive Table of Available Sequences in a Flywheel Project\label{sequences_plot}](./figures/sequences_table.png)
+
+![Interactive Tree Diagram Illustrating BIDS Curation\label{bids_curation}](./figures/bids_curation.png)
+
+![Plot Enumerating Gear Runs in a Flywheel Project\label{gear_runs}](./figures/gear_runs.png)
 
 \newpage
 
