@@ -1,0 +1,5 @@
+# FlywheelTools
+
+Paper for FlywheelTools to be submitted to Frontiers.
+
+Compile with `pandoc --bibliography bibliography.bib -o Paper.pdf --from markdown --filter pandoc-fignos --citeproc Paper.md`

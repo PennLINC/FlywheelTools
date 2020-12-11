@@ -13,7 +13,7 @@ provides researchers with novel opportunities to answer questions using much
 larger sample sizes, but also presents challenges to reproducibility. Researchers
 carrying out different tasks on different operating systems, while attempting to
 reproduce an analysis, can often end up with disparate and irreplicable results
-[@10.3389/fninf.2018.00028].
+[@vaccarino2018brain].
 Two major advances in the field offer ways of improving reproducibility: imaging
 databases, and Brain Imaging Data Structure (BIDS).
 
@@ -28,7 +28,7 @@ provenance, allowing all changes made to a dataset to be tracked and recorded at
 all times. The second is metadata provenance, allowing fine grain tracking of
 who applied changes, what software was used, and when. Notable examples of these
 databases include COINS [@landis2016coins], XNAT [@herrick2016xnat], LORIS
-[@10.3389/fninf.2011.00037], and others ([@book2016neuroimaging],
+[@vaccarino2018brain], and others ([@book2016neuroimaging],
 [@rogovin2020ndi], [@vaccarino2018brain], [@poldrack2017openfmri]). Flywheel,
 the focus of this paper, is a recent addition to this list. In addition to the
 fundamental features above, Flywheel's model also strongly emphasizes the use
@@ -102,7 +102,7 @@ workflow on the Flywheel platform, and expand on current Flywheel functionality
 for addressing BIDS curation. In this paper, we describe the Flywheel platform,
 BIDS, and the software design approach in further detail in the Methods section.
 In the Results section, we demonstrate a reproducible BIDS curation workflow on
-Flywheel. We believe `FlywheelTools` brings an array of powerful functionality
+Flywheel. `FlywheelTools` brings an array of powerful functionality
 for curating data on the Flywheel database and interacting with BIDS data on the
 platform, whilst maintaining the simplicity and usability of the common
 `HeuDiConv` workflow and expanding on Flywheel's BIDS functionality.  
@@ -113,8 +113,7 @@ The FlywheelTools toolkit allows users to follow a reproducible
 workflow for BIDS curation and audit of their data. This workflow typically
 includes: inspection of sequences collected during a study; design of a
 curation schema; implementation of curation schema;
-curated data inspection and export; and finally audit of data and analyses (see
-Figure \ref{main_workflow}).
+curated data inspection and export; and finally audit of data and analyses.
 
 ## Programming Languages & Technologies
 
@@ -141,7 +140,7 @@ Flywheel is a data management and analysis platform for research, which
 lends itself well to neuroimaging. The platform focuses heavily on collaborative
 and reproducible science. User-facing components of the platform itself are the
 web User Interface (UI), the Software Development Kits (SDK), and the Application
-Programming Interface (API) (Figure \ref{architecture}).
+Programming Interface (API) (**Figure @fig:architecture**).
 
 ### Flywheel Web UI
 
@@ -165,13 +164,13 @@ accessible through a a specific URL that a web browser or SDK can access by
 requesting the data and waiting for a response from the server. The Flywheel
 Python SDK provides a powerful interface for inspecting and manipulating data
 through this API. By standardising this underlying data model into Pythonic
-Objects, the flywheel SDK is effectively an object relationship
-mapper (ORM), similar to the popular SQLAlchemy software.
+objects, the flywheel SDK is effectively an object relationship
+mapper, similar to the popular SQLAlchemy software.
 
 ### Flywheel Data Model
 
 Objects in Flywheel's data model follow a specific hierarchical
-structure (Figure \ref{datamodel}) — at the top level is the Flywheel *instance*, a
+structure (**Figure @fig:datamodel**) — at the top level is the Flywheel *instance*, a
 process running that serves the API to users (for example, a neuroimaging
 center). Within the Flywheel instance, there are multiple *groups*, which
 are typically labs or research units that collaborate on one or more
@@ -179,10 +178,10 @@ are typically labs or research units that collaborate on one or more
 participants), and each subject can have one or many *sessions* (i.e. scanning
 visits). Within a session, there may be one or many *acquisition* objects which
 represent the scanning sequence collected during a particular scan or
-examination (e.g. rs-fMRI, DWI, PET), and under each acquisition is *attached*
+examination (e.g. sMRI, rs-fMRI, DWI), and under each acquisition is *attached*
 the data file associated with the sequence (e.g. a NIfTI file or DICOM).
 Note that a file can be attached to any object type, and each object can have
-metadata associated with it. Hence, a subject object may have de-identified
+metadata associated with it. Hence, a subject object may have
 demographic metadata associated to that participant, and the subject may also
 have a text file attached to it (such as clinical data). A notable exception to
 the hierarchical structure rule is the analysis object, which behaves in much
@@ -206,23 +205,23 @@ summarisation. In addition to the multitude of gears available on the platform,
 users are able to package their own software in a gear and use it for running
 analysis workflows on their Flywheel data, via the web UI or SDK. The complexity
 and frequency of the task suggests whether to accomplish a task using the web
-UI, programmatically using the SDK, or by wrapping it as a workflow into a gear (Figure \ref{complexityfrequency}). Gears can take existing Flywheel data, such
+UI, programmatically using the SDK, or by wrapping it as a workflow into a gear.
+Gears can consume existing Flywheel data, such
 as images or file attachments, as inputs to the workflow, and can be created
 with clickable configuration options. Once a workflow has completed running,
 Flywheel collects any files remaining in the container's pre-defined output
 directory and attaches them to a resulting analysis object. The resultant files
 of a gear (such as an HTML report or tabulated data) can be viewed on the
 Flywheel UI, downloaded to disk for further data sharing or analysis, or be used
-as input to a subsequent gear themselves.
+as input to a subsequent gear.
 
 # Results
 
 Flywheel Tools is implemented using the Flywheel SDK to enable easy
 inspection, curation, validation, and audit of Flywheel data through a handful
 of user-friendly gears and command-line interfaces.
-
 The first module of the package is called `fw-heudiconv`, and is largely
-inspired by the popular HeuDiConv Python package [^1]. `fw-heudiconv` is
+inspired by the popular HeuDiConv Python package. `fw-heudiconv` is
 a multi-part toolbox for reprodicible curation of neuroimaging data into BIDS on
 Flywheel. The second module, `flaudit`, is a tool for accomplishing a complete
 audit of a Flywheel project, giving users a broad overview of the key elements
@@ -252,8 +251,8 @@ available in `fw-heudiconv`, and each of them starts by querying data from
 Flywheel. Users can filter their queries, so as to operate on an entire Flywheel
 project, a subset of subjects, or a subset of sessions. Notably each command has the
 ability to safely test and evaluate its effects without manipulating metadata on
-Flywheel or writing data to disk. In particular, there are five commands users
-can access:
+Flywheel or writing data to disk (using the `--dry-run` option).
+In particular, there are five commands users can access:
 
 #### 1. `fw-heudiconv-tabulate`
 
@@ -285,9 +284,9 @@ at any time at the user's discretion.
 #### 3. `fw-heudiconv-export`
 
 The export tool is used to export a BIDS dataset on Flywheel to disk. The tool
-is primarily used as a helper tool for other gears and scripts to quickly and
-easily extract their BIDS data into the workspace of their analysis pipeline, or
-by individuals who need their BIDS data exported from Flywheel.
+is primarily used as a tool for other gears and scripts to quickly and
+easily extract their BIDS data into the workspace of their analysis pipeline. It
+is also able to export BIDS data from Flywheel to a local disk.
 
 #### 4. `fw-heudiconv-validate`
 
@@ -295,31 +294,38 @@ The validate tool is a wrapper around the popular BIDS Validator package
 **[CITE]()** and is use to check if the applied curation results in a BIDS-valid
 dataset. After exporting a data set with `fw-heudiconv-export`, the validate
 tool runs the BIDS validator on the dataset and returns the result and verbose
-description of the errors and warnings given by the BIDS Validator.
+description of the errors and warnings given by the BIDS Validator. Additionally,
+the results of the validator can be tabulated for easy inspection. On Flywheel,
+`fw-heudiconv-validate` also displays a green check mark in the analysis tab
+for successful validation, and a red check mark otherwise, allowing for quick
+visual inspection of BIDS curation status for each session.
 
 #### 5. `fw-heudiconv-clear`
 
 The clear tool is used to clear BIDS information cleanly and safely from the
-project or subjects and sessions queried. This can be useful when overwriting by
-re-curating current BIDS data doesn't fully erase existing data.
+project or subjects and sessions queried. This can be useful when overwriting
+existing BIDS data doesn't overwrite all of the BIDS fields previously available.
+These persistent fields can be removed by running `fw-heudiconv-clear` before
+re-curating.
 
 ### Heuristic File
 
 The heuristic file is a Python file used as input to the `fw-heudiconv-curate`
-command. It instructs `fw-heudiconv` how to programmatically sort and parse
-through each acquisition object in Flywheel, and assign it to a BIDS-valid
-naming template. This is done by checking attributes of a list of `seqInfo`
-objects — generated from each DICOM's header information — against user-defined
+command. The file instructs `fw-heudiconv` on how
+to programmatically sort and parse through each acquisition object in Flywheel,
+and assign it to a BIDS-valid naming template. This is done by checking
+attributes of a list of `seqInfo` objects — which are generated from each
+DICOM's header information — against user-defined
 boolean rules. For example, if a T1-weighted image is present in a dataset, the
 user could define a string with a BIDS-valid naming template for this type of
 file, such as:
 
 ```
-t1w = 'subject-{SubjectLabel}_session-{SessionLabel}_T1w.nii.gz'
+t1w = 'subject-{Subject}_session-{Session}_T1w.nii.gz'
 ```
 
-Where the `SubjectLabel` and `SessionLabel` portions are expected to be
-automatically generated for each subject and session. After a DICOM's
+Where the `Subject` and `Session` portions are expected to be
+automatically generated for each subject and session in the dataset. After a DICOM's
 `SeriesDescription` field is added to the `seqInfo`'s `SeriesDescription`
 attribute, the user can create simple boolean rules to check if the string 'T1w'
 is in the `SeriesDescription`. If such a rule is met, this acquisition and its
@@ -345,9 +351,17 @@ By reserving select keywords for functions and metadata, heuristic files become
 versatile tools for defining and manipulating a wide array of metadata in
 Flywheel BIDS curation.
 
+Importantly, because this heuristic file is implemented in Python, users are
+able to version control their files using Git, and shared with other tools such
+as Github. Finally, when run on Flywheel as a gear, the heuristic file is
+automatically attached as an input to the analysis object created by
+`fw-heudiconv-curate`, allowing users to easily access the version history of
+their curation attempts.
+
 ### Curation Workflow
 
-For most users, the curation workflow follows the sequence detailed above; after
+For most users, the curation workflow follows the sequence detailed above
+(**Figure @fig:main_workflow**). After
 ingress of a batch of DICOMs from a scan, Flywheel's automated utility gears
 convert the DICOMs to NIfTI files. Users can then begin running
 `fw-heudiconv-tabulate` to gather the information stored in the DICOM headers
@@ -375,9 +389,9 @@ entire Flywheel project. Features of this overview include a comprehensive
 visualization of scanning sequences and their parameters; the corresponding BIDS
 curated result of each sequence; an enumeration of gear analyses and their
 runtimes and success rates; and a visualization of the various analysis
-workflows run on each session (Figures \ref{sequences_plot},
-\ref{sequences_table}, \ref{bids_curation}, \ref{bids_curation}). This
-information is compiled in a portable HTML report that can be opened in the
+workflows run on each session
+(**Figures @fig:sequences_plot, @fig:sequences_table, @fig:bids_curation, @fig:gear_runs **).
+This information is compiled in a portable HTML report that can be opened in the
 Flywheel UI or in any web browser.
 
 ### Architecture & Design
@@ -403,21 +417,19 @@ platform.
 
 # Figures
 
-![Flywheel Tools Workflow\label{main_workflow}](./figures/main_workflow.png)
+![Flywheel Basic Architecture](./figures/architecture.png){#fig:architecture}
 
-![Flywheel General Architecture\label{architecture}](./figures/architecture.png)
+![Flywheel Data Model](./figures/data-model.png){#fig:datamodel}
 
-![Flywheel Data Model\label{datamodel}](./figures/data-model.png)
+![Flywheel Tools Workflow](./figures/fwheudiconv_workflow.png){#fig:main_workflow}
 
-![Decision Framework for Accomplishing Tasks on Flywheel\label{complexityfrequency}](./figures/FlywheelTools-complexity-frequency.png)
+![Plot Enumerating Available Sequences in a Flywheel Project](./figures/sequences_plot.png){#fig:sequences_plot}
 
-![Plot Enumerating Available Sequences in a Flywheel Project\label{sequences_plot}](./figures/sequences_plot.png)
+![Interactive Table of Available Sequences in a Flywheel Project](./figures/sequences_table.png){#fig:sequences_table}
 
-![Interactive Table of Available Sequences in a Flywheel Project\label{sequences_plot}](./figures/sequences_table.png)
+![Interactive Tree Diagram Illustrating BIDS Curation}](./figures/bids_curation.png){#fig:bids_curation}
 
-![Interactive Tree Diagram Illustrating BIDS Curation\label{bids_curation}](./figures/bids_curation.png)
-
-![Plot Enumerating Gear Runs in a Flywheel Project\label{gear_runs}](./figures/gear_runs.png)
+![Plot Enumerating Gear Runs in a Flywheel Project](./figures/gear_runs.png){#fig:gear_runs}
 
 \newpage
 
