@@ -1,7 +1,12 @@
 ---
 title: "Flywheel Tools"
 subtitle: "Data Curation and Manipulation on the Flywheel Platform"
-author: Tinashe M. Tapera, MSc
+author:
+- Tinashe M. Tapera, MSc
+- Matthew Cieslak, PhD
+- Azeez Adebimpe, PhD
+- Max Bertolero, PhD
+- Theodore Satterthwaite, PhD
 bibliography: bibliography.bib
 ---
 
@@ -291,7 +296,7 @@ is also able to export BIDS data from Flywheel to a local disk.
 #### 4. `fw-heudiconv-validate`
 
 The validate tool is a wrapper around the popular BIDS Validator package
-**[CITE]()** and is use to check if the applied curation results in a BIDS-valid
+**[CITE]()?** and is use to check if the applied curation results in a BIDS-valid
 dataset. After exporting a data set with `fw-heudiconv-export`, the validate
 tool runs the BIDS validator on the dataset and returns the result and verbose
 description of the errors and warnings given by the BIDS Validator. Additionally,
@@ -351,7 +356,7 @@ By reserving select keywords for functions and metadata, heuristic files become
 versatile tools for defining and manipulating a wide array of metadata in
 Flywheel BIDS curation.
 
-Importantly, because this heuristic file is implemented in Python, users are
+Importantly, because this heuristic file plain text Python code, users are
 able to version control their files using Git, and shared with other tools such
 as Github. Finally, when run on Flywheel as a gear, the heuristic file is
 automatically attached as an input to the analysis object created by
@@ -375,8 +380,7 @@ the `--dry-run` flag to apply the changes. The user can then use
 by removing all BIDS metadata with `fw-heudiconv-clear`.
 
 
-
-Additionally, if being run on the Flywheel UI, each of the commands is available
+If `fw-heudiconv` is run from the Flywheel UI, each of the commands is available
 as a Flywheel gear. This option can be beneficial for data provenance as all of
 a gear's commands and inputs, as well as outputs and log files, are stored and
 attached to each gear run.
@@ -384,24 +388,74 @@ attached to each gear run.
 ## `flaudit`
 
 The second module is a Flywheel project auditor, aptly named `flaudit`. The
-module is intended to give Flywheel users a broad overview of their
-entire Flywheel project. Features of this overview include a comprehensive
-visualization of scanning sequences and their parameters; the corresponding BIDS
-curated result of each sequence; an enumeration of gear analyses and their
-runtimes and success rates; and a visualization of the various analysis
-workflows run on each session
-(**Figures @fig:sequences_plot, @fig:sequences_table, @fig:bids_curation, @fig:gear_runs **).
-This information is compiled in a portable HTML report that can be opened in the
-Flywheel UI or in any web browser.
+module is intended to give Flywheel users a broad understanding of their
+entire Flywheel project, by summarizing the available data and illustrating
+analysis workflows. The output of this module, a portable HTML report, presents
+this information using a number of visualizations built in R Markdown using HTML,
+Javascript, and GGplot, in two main sections.
 
 ### Architecture & Design
 
 Using similar internal machinery to `fw-heudiconv-tabulate`, `flaudit` loops
 over existing data in a project and tabulates information about scanning
-sequences, BIDS metadata, and gear jobs that have been run. These 3 tables are
+sequences, BIDS metadata, and gear analyses that have been run. These 3 tables are
 saved internally and then passed as input to an R markdown script that generates
-a dynamic HTML report. The data are also saved as output for
-the user to access and analyse at their own discretion.
+an interactive HTML report. The data are also saved as output for
+the user to access and analyze in their software of choice.
+
+### Report Section 1: Overview
+
+The overview section provides a numerical overview of sequences, BIDS data,
+gear runs, and gear runtimes.
+
+The first visualization uses the sequence data input to create a word cloud
+visualizing the names of the different sequences acquired across the entire
+Flywheel dataset, where the size of the word corresponds to the frequency of the
+sequence collected. This visual is accompanied by a bar chart and an
+interactive table that users can search to compare values
+(**Figures @fig:sequences_plot and @fig:sequences_table**).
+
+Next, using the BIDS metadata input, the report provides an interactive tree
+viewer to examine BIDS curation. In the tree, the nodes branch out from the
+project to show each sequence acquisition. For each acquisition,
+if the data has been curated into BIDS, the node itself can also branch out to
+show a BIDS name template, demonstrating what BIDS name that sequence has been
+given. Hovering over the BIDS name will display the number of subjects whose
+data have been named as such (**Figure @fig:bids_curation**).
+
+Using the gear analysis data as input, the section lastly enumerates the gear
+analyses that have been run successfully
+on any session within the project, and enumerates the runtimes for these
+processes. The results are visualized in a series of bar charts (**Figure @fig:gear_runs**).
+
+### Report Section 2: Project Completion
+
+As an optional input, `flaudit` allows users to specify a *template subject*,
+a subject from the Flywheel project who serves as an exemplar for other
+subjects to be compared against. This subject may have been the researcher's
+first choice for testing BIDS curation and analysis pipelines, perhaps due to
+the subject's high data quality or data completeness. Researchers can compare
+others to this *template subject*, to determine if other subjects in the project
+also meet this high standard. The project completion section comprises of three
+interactive tables.
+
+In the first table, it is assumed that the *template subject* has a complete
+number of sequences in their dataset. These sequences are listed as columns in
+the table. Each subsequent row is a subject in the project, and each value in
+the table is a boolean value (*complete* or *incomplete*) indicating if that
+subject has each sequence. The table is searchable, meaning that users can
+simply filter each column for "incomplete" to learn which subjects do not have
+the same data as the template (**Figure @fig:seq_complete**). Likewise, the
+second table illustrates the completeness of BIDS data for each other subject
+in comparison to the template (**Figure @fig:bids_complete**). In this case,
+rows indicate subjects while columns indicate each BIDS naming template.Lastly,
+the third table illustrates completeness of gear analyses. In this case,
+researchers can use this table to assert that all other subjects in the project
+have had at least one run of each of the analysis pipelines that the
+*template subject* has had. Hence, in this table, each column specifies an
+analysis run. For version uniformity, this comparison is sensitive to
+pipeline versions, and so the version of a pipeline that was used for each
+subject must match that of the *template subject* (**Figure @fig:gears_complete**).
 
 # Discussion
 
@@ -409,7 +463,7 @@ As the neuroimaging community embraces Big Data and the various platforms
 available for storage and analysis, it is becoming increasingly important for
 researchers to eschew the *ad hoc* analysis procedures previously run on a
 single machine or cluster. Instead, cloud-based platforms like Flywheel provide
-opportunities for more reproducible, reliable, and shareable science. Flywheel
+opportunities for more reproducible, reliable, and scalable science. Flywheel
 Tools provides software that maximizes these opportunities on the Flywheel
 platform.
 
@@ -427,9 +481,17 @@ platform.
 
 ![Interactive Table of Available Sequences in a Flywheel Project](./figures/sequences_table.png){#fig:sequences_table}
 
-![Interactive Tree Diagram Illustrating BIDS Curation}](./figures/bids_curation.png){#fig:bids_curation}
+![Interactive Tree Diagram Illustrating BIDS Curation](./figures/bids_curation.png){#fig:bids_curation}
 
 ![Plot Enumerating Gear Runs in a Flywheel Project](./figures/gear_runs.png){#fig:gear_runs}
+
+![Sequence Completeness Compared to the Template Subject in a Flywheel Project](./figures/sequence_completion.png){#fig:seq_complete}
+
+![BIDS Completeness Compared to the Template Subject in a Flywheel Project](./figures/bids_completion.png){#fig:bids_complete}
+
+![BIDS Completeness Compared to the Template Subject in a Flywheel Project](./figures/gear_completion.png){#fig:gears_complete}
+
+\newpage
 
 \newpage
 
